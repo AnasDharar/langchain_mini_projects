@@ -4,9 +4,11 @@ from langchain_core.output_parsers import StrOutputParser
 import os
 import subprocess
 import sys
+from dotenv import load_dotenv
 
 
 def get_comment(code: str):
+    load_dotenv()
     model = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash-lite"
     )
