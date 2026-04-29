@@ -21,7 +21,7 @@ Generate concise comments for the whole code explaining what it does.
 
 Rules:
 - Return ONLY valid Python comments
-- Do not return python code
+- DO NOT RETURN PYTHON CODE, ONLY SUMMARY OF CODE IN THE FORM OF VALID COMMENTS
 - Keep comments concise
 
 Code:
@@ -37,7 +37,7 @@ Code:
 
     # Remove accidental markdown wrappers
     result = result.replace("```python", "").replace("```", "").strip()
-
+    
     return result
 
 
@@ -73,7 +73,7 @@ else:
 
 python_files = [f for f in changed_files if f.endswith(".py")]
 
-print("Python files changed:", python_files)
+print("Python files to be commented:", python_files)
 
 
 for file in python_files:
@@ -88,7 +88,7 @@ for file in python_files:
 
         # Generate new comments
         comment = get_comment(code)
-
+        print("Comments generated for ", file, "editing it now")
         # Add fresh comments
         new_data = comment + "\n\n" + code
 

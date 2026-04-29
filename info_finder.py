@@ -36,4 +36,3 @@ result = chain.invoke({'thing':inp})
 
 print(result)
 print(type(result)) # <class '__main__.OutputFormat2'>
-
