@@ -1,3 +1,37 @@
+# Loads environment variables from a .env file.
+# Imports necessary libraries for interacting with Google Generative AI,
+# creating prompts, parsing output, defining data models, and loading environment variables.
+
+# Prints a placeholder message.
+
+# Defines a Pydantic model for structured output, expecting a list of strings for subtypes.
+# This model is intended for a scenario where only subtype names are needed.
+
+# Defines another Pydantic model for structured output, expecting a dictionary
+# to store subtypes as keys and their associated information as values.
+
+# Creates a prompt template to request 5 subtypes of a given 'thing'.
+
+# Initializes the Google Generative AI chat model, specifically using the "gemini-2.5-flash-lite" model.
+
+# Configures the model to output structured data conforming to the OutputFormat Pydantic model.
+
+# Configures the model to output structured data conforming to the OutputFormat2 Pydantic model.
+
+# Creates a prompt template to generate a one-sentence description for a list of 'sub_types'.
+
+# Initializes a string output parser.
+
+# Chains together the prompt, structured model, second prompt, and second structured model
+# to first get subtypes and then get information about them.
+
+# Prompts the user to input the 'thing' for which they want subtypes.
+
+# Invokes the defined chain with the user's input to get the structured result.
+
+# Prints the final structured result obtained from the chain.
+# Prints the type of the result, which is expected to be OutputFormat2.
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate 
 from langchain_core.output_parsers import StrOutputParser

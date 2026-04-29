@@ -1,64 +1,21 @@
-# Imports necessary libraries for LLM interactions, prompt management, and data parsing.
-# Loads environment variables, likely for API keys.
-
-# Defines a Pydantic model to structure the expected output: a list of strings.
-class OutputFormat(BaseModel):
-    sub_types: list[str] = Field(description="Write 5 top subtypes of the specific thing that the user wants")
-
-# Initializes a Pydantic output parser to handle structured output from the LLM based on the OutputFormat model.
-parser = PydanticOutputParser(pydantic_object=OutputFormat)
-
-# --- Method 1: Parser-Driven Structured Output ---
-# Creates a prompt template that includes instructions for the LLM to provide subtypes and format them according to the parser's instructions.
-prompt1 = PromptTemplate(
-    template="""Tell me 5 subtypes of the following thing: {thing}
-    
-    {format_instructions}
-    """,
-    input_variables=['thing'],
-    partial_variables={
-        "format_instructions": parser.get_format_instructions()
-    }
-)
-# Initializes a Google Generative AI chat model.
-model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite"
-)
-# Creates a LangChain chain combining the modified prompt, the LLM, and the parser for structured output.
-chain1 = prompt1 | model | parser
-
-# --- Method 2: Model-Driven Structured Output ---
-# Creates a simpler prompt template asking for subtypes without explicit formatting instructions.
-prompt2 = PromptTemplate(
-    template="""Tell me 5 subtypes of the following thing: {thing}""",
-    input_variables=['thing'],
-)
-# Reconfigures the existing LLM to directly output structured data according to the OutputFormat model.
-structured_model = model.with_structured_output(OutputFormat)
-
-# Creates a LangChain chain combining the simple prompt and the model configured for structured output. The model itself handles parsing.
-chain2 = prompt2 | structured_model
-
-# Example of another LLM model that could be used (commented out).
-# model2 = ChatGroq(
-#     model="llama-3.1-8b-instant"
-# )
-
-# Explains that there are two primary methods demonstrated for achieving structured output: modifying the prompt or modifying the model.
-
-# Prompts the user to input the subject for which they want subtypes.
-inp = input("What do you want subtypes for? : ")
-# Asks the user to choose between Method 1 (A) or Method 2 (B).
-choice = input("Enter A for changed prompt with normal model, Enter B for normal prompt with changed model")
-# Executes the chosen chain based on user input and stores the result.
-if choice=="A":
-    result = chain1.invoke({'thing':inp})
-else:
-    result = chain2.invoke({'thing':inp})
-# Prints the structured output obtained from the LLM.
-print(result)
-# Prints the data type of the result.
-print(type(result))
+# Load environment variables from .env file
+# Define a Pydantic model for structured output, expecting a list of strings
+# Initialize a Pydantic output parser for the defined model
+# Method 1: Parser-driven structured output
+# Create a prompt template that includes instructions for the output format
+# Initialize a Google Generative AI chat model
+# Create a chain for Method 1: prompt -> model -> parser
+# Method 2: Model-driven structured output
+# Create a simple prompt template
+# Create a structured version of the model that automatically handles parsing and formatting
+# Create a chain for Method 2: prompt -> structured_model
+# Alternative Groq model (commented out)
+# Explanation of the two methods
+# Get user input for the item to find subtypes for
+# Get user choice between Method 1 and Method 2
+# Execute the chosen method and get the result
+# Print the result
+# Print the type of the result
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
