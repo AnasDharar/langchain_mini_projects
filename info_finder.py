@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+print("stuff")
+
 # Here, parser is not used for json. we are using method 2. For more info, visit type_finder.py
 class OutputFormat(BaseModel):
     sub_types: list[str] = Field(description="Write 5 top subtypes of the specific thing that the user wants")
