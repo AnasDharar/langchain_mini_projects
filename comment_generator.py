@@ -3,7 +3,7 @@ import os
 import subprocess
 
 changed_files = subprocess.check_output(
-    ["git", "diff", "--cached", "--name-only"]
+    ["git", "diff", "HEAD", "HEAD~1", "--name-only"]
 ).decode().splitlines()
 
 python_files = [f for f in changed_files if f.endswith(".py")]
