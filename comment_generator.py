@@ -1,66 +1,3 @@
-# Load environment variables from a .env file.
-# Initialize the Gemini AI chat model for code generation.
-
-# Define a prompt template for generating Python documentation comments.
-
-
-
-""",
-
-# Create an output parser to convert model output to a string.
-# Build a Langchain chain for prompt, model, and parser.
-
-# Invoke the chain with the provided Python code.
-
-# Remove accidental markdown wrappers from the AI's output.
-
-# Split the result into individual lines for processing.
-# Initialize a list to store valid comment lines.
-# Iterate through each line of the AI's output.
-    # Keep lines that start with comment markers or are empty.
-
-# Join the filtered comment lines back into a single string.
-# Return the generated documentation comments.
-
-# Function to remove existing comments and imports from Python code.
-# It splits the code into lines, finds the index of the first import statement,
-# and returns the code starting from that import statement, effectively removing leading comments and older imports.
-    # Split the input code into a list of lines.
-
-    # Initialize the index for the first import statement.
-
-    # Iterate through each line to find the first import.
-
-        # Check if the line starts with an import statement.
-            # Set the index and break the loop.
-
-    # Join lines from the first import onwards.
-
-# Retrieve the remote commit hash from command-line arguments.
-# Retrieve the local latest commit hash from command-line arguments.
-
-# Determine the list of changed files.
-    # List all files if remote commit is a placeholder.
-    # List files changed between two commits.
-
-# Filter the changed files to include only Python files.
-
-# Print the list of Python files to be processed.
-
-# Iterate over each Python file identified.
-    # Check if the file actually exists.
-
-        # Open and read the content of the Python file.
-
-        # Remove existing comments and leading code.
-
-        # Generate new documentation comments for the code.
-        # Combine the generated comments with the original code.
-
-        # Open and write the updated content back to the file.
-
-        # Print a confirmation message for the updated file.
-
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -69,10 +6,6 @@ import subprocess
 import sys
 from dotenv import load_dotenv
 
-# Function to generate documentation comments for a given Python code string.
-# Loads environment variables, initializes the Gemini AI model, defines a prompt template for comment generation,
-# sets up an output parser, and creates a Langchain chain to invoke the model.
-# It then invokes the chain with the provided code and cleans up the generated comments by removing markdown wrappers.
 def get_comment(code: str):
     load_dotenv()
     model = ChatGoogleGenerativeAI(
@@ -81,20 +14,18 @@ def get_comment(code: str):
 
     prompt = PromptTemplate(
         template="""
-You are a Python documentation assistant.
+You are a Python documentation comment assistant.
 
-Generate ONLY comments for the provided code explaining what it does.
-DO NOT include any code, imports, or function definitions.
-ONLY return Python comments starting with # or '''
+Task:
+Generate comments that explain the core behavior of the given Python code.
 
-Rules:
-- ONLY return Python comments (lines starting with # or multi-line comments with ''')
-- DO NOT return any Python code
-- DO NOT return imports or function definitions
-- DO NOT use markdown code blocks (no ```python or ```)
-- Keep comments concise and to the point
-- Prefer one short line per logical block (about 5-12 words)
-- Avoid repetition and obvious statements
+Priority Rules (highest to lowest):
+1. Output format: Return ONLY Python single-line comments that start with #.
+2. No code: Do NOT output code, imports, function/class definitions, or markdown.
+3. Length limit: Return at most 5 comment lines total.
+4. Brevity: Keep each line concise and to the point (roughly 5-12 words).
+5. Quality: Focus on core logic, avoid repetition, and skip obvious statements.
+6. Clarity: Use plain, direct language.
 
 Code:
 {code}
@@ -107,10 +38,8 @@ Code:
 
     result = chain.invoke({"code": code})
 
-    # Remove accidental markdown wrappers
     result = result.replace("```python", "").replace("```", "").strip()
     
-    # Remove any lines that contain code (imports, function definitions, etc)
     lines = result.split('\n')
     comment_lines = []
     for line in lines:
@@ -121,9 +50,6 @@ Code:
     result = '\n'.join(comment_lines).strip()
     return result
 
-# Function to remove existing comments and imports from Python code.
-# It splits the code into lines, finds the index of the first import statement,
-# and returns the code starting from that import statement, effectively removing leading comments and older imports.
 def remove_comments(code: str):
     lines = code.splitlines()
 
@@ -139,13 +65,9 @@ def remove_comments(code: str):
     cleaned_code = "\n".join(lines[first_import_index:])
     return cleaned_code
 
-# Retrieves the remote commit hash and local latest commit hash from command-line arguments.
 remote_commit = sys.argv[1]
 local_latest = sys.argv[2]
 
-# Determines the list of changed files based on the commit information.
-# If the remote commit is a placeholder (starts with "000000"), it lists all files in the repository.
-# Otherwise, it lists files changed between the remote commit and the local latest commit.
 if remote_commit.startswith("000000"):
     changed_files = subprocess.check_output(
         ["git", "ls-files"]
@@ -155,33 +77,30 @@ else:
         ["git", "diff", remote_commit, local_latest, "--name-only"]
     ).decode().splitlines()
 
-# Filters the list of changed files to include only Python files.
 python_files = [f for f in changed_files if f.endswith(".py")]
 
-# Prints the list of Python files that will be processed for comment generation.
 print("Python files to be commented:", python_files)
 
-# Iterates through each identified Python file.
+
 for file in python_files:
-    # Checks if the file exists before attempting to process it.
+
     if os.path.exists(file):
 
-        # Reads the content of the Python file.
         with open(file, "r", encoding="utf-8") as f:
             code = f.read()
 
-        # Removes any previously generated comments or leading code from the file.
+        
         code = remove_comments(code)
 
-        # Generates new documentation comments for the cleaned code using the AI model.
+        
         comment = get_comment(code)
         print("Comments generated for ", file, "editing it now")
-        # Combines the generated comments with the original code.
+        
         new_data = comment + "\n\n" + code
 
-        # Overwrites the file with the new content including the generated comments.
+        
         with open(file, "w", encoding="utf-8") as f:
             f.write(new_data)
 
-        # Prints a confirmation message indicating that the file has been updated.
+        
         print(f"Updated {file}")
