@@ -1,3 +1,9 @@
+# Loads environment variables for API keys.
+# Initializes a Google Generative AI chat model.
+# Defines a prompt template for comment generation.
+# Creates a chain to process code through the model.
+# Invokes the chain to generate documentation comments.
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
