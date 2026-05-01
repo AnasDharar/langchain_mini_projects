@@ -101,7 +101,9 @@ Rules:
 - DO NOT return any Python code
 - DO NOT return imports or function definitions
 - DO NOT use markdown code blocks (no ```python or ```)
-- Keep comments concise and explain core functionality
+- Keep comments concise and to the point
+- Prefer one short line per logical block (about 5-12 words)
+- Avoid repetition and obvious statements
 
 Code:
 {code}
