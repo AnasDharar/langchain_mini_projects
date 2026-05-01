@@ -1,7 +1,75 @@
-# This script automatically generates documentation comments for Python files.
-# It identifies changed Python files in a Git repository, removes existing comments,
-# uses an AI model to generate new concise comments explaining the core functionality,
-# and then updates the files with the new comments.
+# Function to generate documentation comments for a given Python code string.
+# Loads environment variables, initializes the Gemini AI model, defines a prompt template for comment generation,
+# sets up an output parser, and creates a Langchain chain to invoke the model.
+# It then invokes the chain with the provided code and cleans up the generated comments by removing markdown wrappers.
+    # Load environment variables from a .env file.
+    # Initialize the ChatGoogleGenerativeAI model for AI-powered text generation.
+
+    # Define a prompt template for generating Python documentation comments.
+    # The template specifies the role of the AI assistant, the desired output format (only comments),
+    # and a set of rules to adhere to.
+
+
+
+""",
+
+    # Initialize a StrOutputParser to parse the model's output as a string.
+    # Create a Langchain chain that combines the prompt, model, and parser.
+
+    # Invoke the chain with the provided code to generate comments.
+
+    # Remove accidental markdown wrappers that might be included in the AI's output.
+    
+    # Process the generated comments to ensure only valid comment lines are kept.
+    # This step removes any lines that accidentally contain code, leaving only comments.
+        # Keep lines that start with comment indicators (#, ''', """) or are empty.
+    
+    # Join the filtered comment lines back into a single string.
+
+# Function to remove existing comments and imports from Python code.
+# It splits the code into lines, finds the index of the first import statement,
+# and returns the code starting from that import statement, effectively removing leading comments and older imports.
+    # Split the input code into individual lines.
+
+    # Initialize the index for the first import statement.
+
+    # Iterate through each line to find the first import statement.
+
+        # Check if the line starts with 'import ' or 'from ', indicating an import statement.
+
+    # Reconstruct the code string starting from the first import statement.
+
+# Retrieve the remote commit hash and local latest commit hash from command-line arguments.
+# sys.argv[1] is expected to be the remote commit hash.
+# sys.argv[2] is expected to be the local latest commit hash.
+
+# Determine the list of changed files based on the commit information.
+# If the remote commit is a placeholder (starts with "000000"), it means it's a new branch or initial commit,
+# so list all files in the repository.
+    # Execute 'git ls-files' to get a list of all files tracked by Git.
+    # Otherwise, list files changed between the remote commit and the local latest commit.
+    # Execute 'git diff --name-only' to get the names of changed files.
+
+# Filter the list of changed files to include only those with a '.py' extension.
+
+# Print the list of Python files that will be processed for comment generation.
+
+# Iterate through each identified Python file.
+    # Check if the file actually exists in the file system before attempting to process it.
+
+        # Open and read the content of the Python file.
+
+        # Remove any previously generated comments or leading code from the file content.
+        # This ensures that new comments are generated based on the actual code logic.
+
+        # Generate new documentation comments for the cleaned code using the AI model.
+        # Print a message indicating that comments are being generated and the file is being edited.
+        # Combine the generated comments with the original code, separated by two newlines.
+
+        # Overwrite the original file with the new content, which now includes the generated comments.
+
+        # Print a confirmation message indicating that the file has been successfully updated.
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
