@@ -1,3 +1,66 @@
+# Load environment variables from a .env file.
+# Initialize the Gemini AI chat model for code generation.
+
+# Define a prompt template for generating Python documentation comments.
+
+
+
+""",
+
+# Create an output parser to convert model output to a string.
+# Build a Langchain chain for prompt, model, and parser.
+
+# Invoke the chain with the provided Python code.
+
+# Remove accidental markdown wrappers from the AI's output.
+
+# Split the result into individual lines for processing.
+# Initialize a list to store valid comment lines.
+# Iterate through each line of the AI's output.
+    # Keep lines that start with comment markers or are empty.
+
+# Join the filtered comment lines back into a single string.
+# Return the generated documentation comments.
+
+# Function to remove existing comments and imports from Python code.
+# It splits the code into lines, finds the index of the first import statement,
+# and returns the code starting from that import statement, effectively removing leading comments and older imports.
+    # Split the input code into a list of lines.
+
+    # Initialize the index for the first import statement.
+
+    # Iterate through each line to find the first import.
+
+        # Check if the line starts with an import statement.
+            # Set the index and break the loop.
+
+    # Join lines from the first import onwards.
+
+# Retrieve the remote commit hash from command-line arguments.
+# Retrieve the local latest commit hash from command-line arguments.
+
+# Determine the list of changed files.
+    # List all files if remote commit is a placeholder.
+    # List files changed between two commits.
+
+# Filter the changed files to include only Python files.
+
+# Print the list of Python files to be processed.
+
+# Iterate over each Python file identified.
+    # Check if the file actually exists.
+
+        # Open and read the content of the Python file.
+
+        # Remove existing comments and leading code.
+
+        # Generate new documentation comments for the code.
+        # Combine the generated comments with the original code.
+
+        # Open and write the updated content back to the file.
+
+        # Print a confirmation message for the updated file.
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
